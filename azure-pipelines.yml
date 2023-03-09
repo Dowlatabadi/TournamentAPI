@@ -1,0 +1,50 @@
+
+trigger:
+- develop
+
+pool:
+  name: ap_pellekan
+  # vmImage: windows-latest
+  demands:
+  - msbuild
+  - visualstudio
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+- task: NuGetToolInstaller@1
+  inputs:
+    versionSpec: '6.4.0'
+- task: NuGetCommand@2
+  inputs:
+    command: 'restore'
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'config'
+    nugetConfigPath: 'nuget.config'
+    externalFeedCredentials: 'my nuget'
+
+- task: MSBuild@1
+  displayName: 'Build WebAPI'
+  inputs:
+    solution: WebAPI/*.csproj
+    msbuildLocationMethod: 'location'
+    msbuildLocation: '$(MSBuild_17.0)'
+    msbuildArguments: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:OutputPath=bin\\Latest /p:PackageLocation="$(build.artifactstagingdirectory)\TournamentAPI.zip"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+
+- task: DownloadBuildArtifacts@0
+  inputs:
+    buildType: 'current'
+    downloadType: 'specific'
+    itemPattern: 'TournamentAPI.zip'
+    downloadPath: '$(System.ArtifactsDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
