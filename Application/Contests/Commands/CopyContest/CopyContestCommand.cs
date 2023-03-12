@@ -34,7 +34,7 @@ public class CopyContestCommandHandler : IRequestHandler<CopyContestCommand, int
 				}).ToList();
 
 		Contest contest1=new Contest() {
-			Title = contest.Title,
+			Title = contest.Title+" Copy ",
 				  ChannelId=request.ChannelId,
 				  WeightedDraw=contest.WeightedDraw,
 				  WeightedReward=contest.WeightedReward,
