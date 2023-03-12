@@ -5,6 +5,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="appsettings.json" />
+  </ItemGroup>
 	<ItemGroup>
 		<InternalsVisibleTo Include="ca.Application.IntegrationTests" />
 	</ItemGroup>
