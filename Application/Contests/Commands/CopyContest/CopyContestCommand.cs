@@ -40,6 +40,8 @@ public class CopyContestCommandHandler : IRequestHandler<CopyContestCommand, int
 				  WeightedReward=contest.WeightedReward,
 				  Reward=contest.Reward,
 				  WinnersCapacity=contest.WinnersCapacity,
+				  Start=contest.Start,
+				  Finish=contest.Finish,
 				  Questions=Qs
 		};
 
