@@ -41,7 +41,7 @@ public class GetContestsQueryHandler : IRequestHandler<GetContestsQuery, Paginat
     {
         var contests_init = _context.Contests
             .Where(x => request.ChannelId == null || x.ChannelId == request.ChannelId)
-           .Where(x => string.IsNullOrEmpty(request.ChannelTitle) || x.Channel.Title.Contains(request.ChannelTitle))
+           .Where(x => string.IsNullOrEmpty(request.ChannelTitle) || x.Channel.Title.Equals(request.ChannelTitle))
             .WhereRangeSearch(x => x.Start, request.Start1)
             .WhereRangeSearch(x => x.Start, request.Start2)
             .WhereRangeSearch(x => x.Finish, request.Finish1)
