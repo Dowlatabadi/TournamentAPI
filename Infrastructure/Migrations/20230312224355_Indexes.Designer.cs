@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tournament.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using Tournament.Infrastructure.Persistence;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230312224355_Indexes")]
+    partial class Indexes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -184,9 +187,9 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OptionId");
-
                     b.HasIndex("ParticipationId");
+
+                    b.HasIndex("OptionId", "ParticipationId");
 
                     b.ToTable("Answers", "Tournament");
                 });
@@ -215,9 +218,13 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Title");
 
                     b.ToTable("Channels", "Tournament");
                 });
@@ -287,6 +294,8 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ChannelId");
 
+                    b.HasIndex("Title", "Start", "Finish", "ChannelId", "Calculated");
+
                     b.ToTable("Contests", "Tournament");
                 });
 
@@ -317,14 +326,18 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("QuestionId");
+
+                    b.HasIndex("Title", "QuestionId", "Text");
 
                     b.ToTable("Options", "Tournament");
                 });
@@ -339,7 +352,8 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("AccountId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(45)
+                        .HasColumnType("nvarchar(45)");
 
                     b.Property<int>("ContestId")
                         .HasColumnType("int");
@@ -368,6 +382,8 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ContestId");
+
+                    b.HasIndex("AccountId", "ContestId", "DrawnRank");
 
                     b.ToTable("Participations", "Tournament");
                 });
