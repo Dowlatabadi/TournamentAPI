@@ -13,6 +13,9 @@ public class Contest : BaseAuditableEntity
     public bool WeightedDraw {get; set;}=false;
     public bool WeightedReward {get; set;}=false;
     public double Reward {get; set;} 
+    public double Cost {get; set;} 
+    public int? Number {get; set; }
+    public string guid { get; set; } = "";
     public int WinnersCapacity {get; set;} 
     public int ParticipationCapacity { get; set;} 
     public IList<Question> Questions { get; init; } = new List<Question>(); 
