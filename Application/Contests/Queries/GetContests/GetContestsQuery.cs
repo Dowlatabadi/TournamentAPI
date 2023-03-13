@@ -25,6 +25,7 @@ public record GetContestsQuery : IRequest<PaginatedList<ContestBriefDto>>
     public bool? Resolved { get; init; }
     public bool? WeightedDraw { get; init; }
     public bool? WeightedReward { get; init; }
+    public int MinQuestions { get; init; } = -1;
 }
 
 public class GetContestsQueryHandler : IRequestHandler<GetContestsQuery, PaginatedList<ContestBriefDto?>>
@@ -41,7 +42,7 @@ public class GetContestsQueryHandler : IRequestHandler<GetContestsQuery, Paginat
     {
         var contests_init = _context.Contests
             .Where(x => request.ChannelId == null || x.ChannelId == request.ChannelId)
-           .Where(x => string.IsNullOrEmpty(request.ChannelTitle) || x.Channel.Title.Equals(request.ChannelTitle))
+            .Where(x => string.IsNullOrEmpty(request.ChannelTitle) || x.Channel.Title.Equals(request.ChannelTitle))
             .WhereRangeSearch(x => x.Start, request.Start1)
             .WhereRangeSearch(x => x.Start, request.Start2)
             .WhereRangeSearch(x => x.Finish, request.Finish1)
@@ -49,7 +50,8 @@ public class GetContestsQueryHandler : IRequestHandler<GetContestsQuery, Paginat
             .WhereRangeSearch(x => x.IsActive, new RangeSearch<bool?>(SearchOperator.EqualTo, request.IsActive))
             .WhereRangeSearch(x => x.Resolved, new RangeSearch<bool?>(SearchOperator.EqualTo, request.Resolved))
             .WhereRangeSearch(x => x.WeightedReward, new RangeSearch<bool?>(SearchOperator.EqualTo, request.WeightedReward))
-            .WhereRangeSearch(x => x.WeightedDraw, new RangeSearch<bool?>(SearchOperator.EqualTo, request.WeightedDraw));
+            .WhereRangeSearch(x => x.WeightedDraw, new RangeSearch<bool?>(SearchOperator.EqualTo, request.WeightedDraw))
+            .Where(x => x.Questions.Count>=request.MinQuestions);
 
         if (request.AccountId != null && request.AccountId?.Length > 3)
         {
