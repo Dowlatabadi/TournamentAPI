@@ -21,6 +21,11 @@ public class CreateContestCommandValidator : AbstractValidator<CreateContestComm
 			.NotEmpty().WithMessage("ChannelId is required.")
 			.MustAsync(BeValidChannelId).WithMessage("The Specified ChannelId doesn't Exist.");
 
+		RuleFor(v=>v.Reward)
+			.Must(x=>x>0)
+			.When(x=>x.WeightedReward==false)
+			.WithMessage("Equal rewards is valid iff players don't spend (Reward>0 <=> WeightedReward==False)");
+
         RuleFor(v =>(new { v.WinnersCapacity,v.ParticipationCapacity }))
             .Must(x=>x.ParticipationCapacity>=x.WinnersCapacity).WithMessage("The Contest Participations cap can't be lower than wincap.");
     }

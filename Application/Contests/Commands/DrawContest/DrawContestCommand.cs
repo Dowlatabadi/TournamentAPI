@@ -61,13 +61,15 @@ public class DrawContestCommandHandler : IRequestHandler<DrawContestCommand,Unit
 		//distribute overall rewards between winners
 		foreach (var d in DrawnList){
 
-			var share=TotalSpent;
+			var share=0d;
 			var part=Participations.Where(x=>x.Id==d.item).First();
 
 			if (contest.WeightedReward){
+				share=TotalSpent;
 				share=share*(part.Spent/TotalWinnersSpent);
 			}
 			else{
+				share=contest.Reward;
 				share/=Math.Min(contest.WinnersCapacity,WinnerParts.Count());
 			}
 			part.Reward=share;

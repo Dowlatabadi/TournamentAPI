@@ -39,7 +39,7 @@ public static class ConfigureServices
                 {
 					option.EnableAnnotations();
 
-                    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+                    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Tournament API", Version = "v1" });
 
                     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                     {
