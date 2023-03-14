@@ -55,8 +55,7 @@ public class GetContestsQueryHandler : IRequestHandler<GetContestsQuery, Paginat
             .WhereRangeSearch(x => x.Resolved, new RangeSearch<bool?>(SearchOperator.EqualTo, request.Resolved))
             .WhereRangeSearch(x => x.WeightedReward, new RangeSearch<bool?>(SearchOperator.EqualTo, request.WeightedReward))
             .WhereRangeSearch(x => x.WeightedDraw, new RangeSearch<bool?>(SearchOperator.EqualTo, request.WeightedDraw))
-
-            .Where(x => x.Questions.Count>=request.MinQuestions);
+            .Where(x => x.Questions.Count >= request.MinQuestions);
 
         if (request.AccountId != null && request.AccountId?.Length > 3)
         {
@@ -64,9 +63,9 @@ public class GetContestsQueryHandler : IRequestHandler<GetContestsQuery, Paginat
                 .Where(x => x.Participations.Any(y => y.AccountId == request.AccountId));
         }
 
-        var contests = contests_init.ProjectTo<ContestBriefDto>(_mapper.ConfigurationProvider);
+        var contests = contests_init.OrderByDescending(x => x.Created).ProjectTo<ContestBriefDto>(_mapper.ConfigurationProvider);
 
-        return await contests.OrderBy(x => x.Id).PaginatedListAsync<ContestBriefDto>(request.PageNumber == 0 ? 1 : request.PageNumber, request.PageSize == 0 ? 10 : request.PageSize);
+        return await contests.PaginatedListAsync<ContestBriefDto>(request.PageNumber == 0 ? 1 : request.PageNumber, request.PageSize == 0 ? 10 : request.PageSize);
 
     }
 }

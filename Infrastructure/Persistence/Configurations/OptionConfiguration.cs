@@ -10,8 +10,7 @@ public class OptionConfiguration : IEntityTypeConfiguration<Option>
     {
         builder.HasIndex(x =>new { x.Title,x.QuestionId,x.Text });
         builder.Property(t => t.Title)
-            .HasMaxLength(200)
-            .IsRequired();
+            .HasMaxLength(2048);
     }
 }
 
