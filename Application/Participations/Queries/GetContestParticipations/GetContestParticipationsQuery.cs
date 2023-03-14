@@ -37,9 +37,10 @@ public class GetContestParticipationsQueryHandler : IRequestHandler<GetContestPa
 	{
 		var parts=_context.Participations
 			.Where(x => x.ContestId == request.ContestId)
+			.OrderByDescending(x=>x.Created)
 			.ProjectTo<ParticipationFullDto>(_mapper.ConfigurationProvider) ;
 
-		return await parts.OrderBy(x => x.Id).PaginatedListAsync<ParticipationFullDto>(request.PageNumber == 0 ? 1 : request.PageNumber, request.PageSize == 0 ? 10 : request.PageSize);
+		return await parts.PaginatedListAsync<ParticipationFullDto>(request.PageNumber == 0 ? 1 : request.PageNumber, request.PageSize == 0 ? 10 : request.PageSize);
 	}
 }
 
