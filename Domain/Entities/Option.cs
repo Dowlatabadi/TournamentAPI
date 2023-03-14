@@ -3,6 +3,7 @@ namespace Tournament.Domain.Entities;
 public class Option : BaseAuditableEntity
 {
 	public int QuestionId { get; set; }
+	public int Order { get; set; }
 	public Question Question { get; set; }
 	public string? Title { get; set; }
 	public string? Text { get; set; }

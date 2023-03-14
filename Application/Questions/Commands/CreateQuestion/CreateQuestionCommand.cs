@@ -10,6 +10,7 @@ public record CreateQuestionCommand : IRequest<int>
 {
 	public string? Title { get; init; }
 	public int ContestId { get; init; }
+    public int Order { get; set; }
 }
 public class CreateQuestionCommandHandler : IRequestHandler<CreateQuestionCommand, int>
 {
@@ -23,6 +24,7 @@ public class CreateQuestionCommandHandler : IRequestHandler<CreateQuestionComman
 		var entity = new Question();
 		entity.Title = request.Title;
 		entity.ContestId = request.ContestId;
+		entity.Order = request.Order;
 
 		entity.AddDomainEvent(new QuestionCreatedEvent(entity));
 		_context.Questions.Add(entity);

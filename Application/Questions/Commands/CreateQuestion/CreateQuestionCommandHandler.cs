@@ -13,7 +13,10 @@ public class CreateQuestionCommandValidator : AbstractValidator<CreateQuestionCo
     {
 		_context=context;
 
-		RuleFor(v=>v.ContestId)
+		RuleFor(v => v.Order)
+			.NotEmpty().WithMessage("Order is required.");
+
+        RuleFor(v=>v.ContestId)
 			.NotEmpty().WithMessage("ContestId is required.")
 			.MustAsync(BeValidQuestionId).WithMessage("The Specified ContestId doesn't Exist.");
     }

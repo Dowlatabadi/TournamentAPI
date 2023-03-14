@@ -11,6 +11,9 @@ public record CreateOptionCommand : IRequest<int>
     public string? Text { get; init; }
     public bool IsAnswer { get; init; }=false;
     public int QuestionId { get; init; }
+    public int Order { get; init; }
+
+
 }
 public class CreateOptionCommandHandler : IRequestHandler<CreateOptionCommand, int>
 {
@@ -26,6 +29,7 @@ public class CreateOptionCommandHandler : IRequestHandler<CreateOptionCommand, i
         entity.Text = request.Text;
         entity.IsAnswer = request.IsAnswer;
         entity.QuestionId=request.QuestionId;
+        entity.Order=request.Order;
         _context.Options.Add(entity);
         await _context.SaveChangesAsync(cancellationToken);
         return entity.Id;
