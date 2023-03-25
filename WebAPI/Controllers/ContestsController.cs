@@ -1,5 +1,7 @@
 using Tournament.Application.Common.Models;
 using Tournament.Application.Contests.Commands.CreateContest;
+using Tournament.Application.Contests.Commands.UpdateContest;
+using Tournament.Application.Contests.Commands.DeleteContest;
 using Tournament.Application.Contests.Commands.CopyContest;
 using Tournament.Application.Contests.Commands.DrawContest;
 using Tournament.Application.Contests.Commands.ActivateContestCommand;
@@ -92,6 +94,29 @@ namespace Tournament.WebAPI.Controllers
 		public async Task<ActionResult<int>> Create(CreateContestCommand command)
 		{
 			return await Mediator.Send(command);
+		}
+
+		[SwaggerOperation(Summary = "Updates a contest using defined parameters.")]
+		[HttpPut("{id}")]
+		public async Task<ActionResult<int>> Update(int id,UpdateContestCommand command)
+		{
+			if (id!=command.ContestId){
+				return BadRequest();
+			}
+
+			await Mediator.Send(command);
+
+			return NoContent();
+		}
+
+		[SwaggerOperation(Summary = "Deletes a contest")]
+		[HttpDelete("{id}")]
+		public async Task<ActionResult> Delete(int id)
+		{
+			DeleteContestCommand command=new DeleteContestCommand(id);
+			await Mediator.Send(command);
+
+			return NoContent();
 		}
 
 		[SwaggerOperation(Summary = "sets a contest to active state contest.")]

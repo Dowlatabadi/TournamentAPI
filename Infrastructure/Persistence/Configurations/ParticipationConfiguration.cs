@@ -12,6 +12,10 @@ public class ParticipationConfiguration : IEntityTypeConfiguration<Participation
         builder.Property(t => t.AccountId)
             .HasMaxLength(45)
             .IsRequired();
+		builder.HasMany(x=>x.Answers)
+			.WithOne(x=>x.Participation)
+			.OnDelete(DeleteBehavior.Cascade);
+
     }
 }
 

@@ -12,6 +12,14 @@ public class ContestConfiguration : IEntityTypeConfiguration<Contest>
         builder.Property(t => t.Title)
             .HasMaxLength(300)
             .IsRequired();
+
+		builder.HasMany(x=>x.Questions)
+			.WithOne(x=>x.Contest)
+			.OnDelete(DeleteBehavior.Cascade);
+
+		builder.HasMany(x=>x.Participations)
+			.WithOne(x=>x.Contest)
+			.OnDelete(DeleteBehavior.Cascade);
     }
 }
 
