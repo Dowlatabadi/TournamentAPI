@@ -11,6 +11,10 @@ public class OptionConfiguration : IEntityTypeConfiguration<Option>
         builder.HasIndex(x =>new { x.Title,x.QuestionId,x.Text });
         builder.Property(t => t.Title)
             .HasMaxLength(2048);
+
+        builder.HasMany(x => x.Answer)
+            .WithOne(x => x.Option)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
 

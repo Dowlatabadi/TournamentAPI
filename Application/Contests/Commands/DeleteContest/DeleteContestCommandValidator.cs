@@ -17,8 +17,7 @@ public class DrawContestCommandValidator : AbstractValidator<DeleteContestComman
 			.MustAsync(ContestExists).WithMessage("The Specified Contest Id is not associated with a contest.");
     }
 
-
 	public async Task<bool> ContestExists(int cId, CancellationToken cancellationToken){
-		return await _context.Participations.AnyAsync(x=>x.ContestId==cId);
+		return await _context.Contests.AnyAsync(x=>x.Id==cId);
 	}
 }
