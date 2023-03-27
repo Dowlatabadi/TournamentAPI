@@ -55,8 +55,13 @@ public class DrawContestCommandHandler : IRequestHandler<DrawContestCommand,Unit
 		if (!contest.WeightedDraw){
 			WinnerParts=WinnerParts.Select(x=>(x.Item1,1d)).ToList();
 		}
+		var WinnersCapacity = int.MaxValue;
+        if (contest.WinnersCapacity > 0)
+		{
+            WinnersCapacity=contest.WinnersCapacity;
+        }
 		//conduct the draw and determine orders [based on weights]
-		var	DrawnList=_randomdrawservice.Draw(WinnerParts,Math.Min(contest.WinnersCapacity,WinnerParts.Count())).ToList();
+		var	DrawnList=_randomdrawservice.Draw(WinnerParts,Math.Min(WinnersCapacity, WinnerParts.Count())).ToList();
 		var TotalWinnersSpent=WinnerParts.Where(y=> DrawnList.Select(x=>x.item).ToList().Contains(y.Id)).Sum(x=>x.Spent);
 		//distribute overall rewards between winners
 		foreach (var d in DrawnList){
@@ -70,7 +75,7 @@ public class DrawContestCommandHandler : IRequestHandler<DrawContestCommand,Unit
 			}
 			else{
 				share=contest.Reward;
-				share/=Math.Min(contest.WinnersCapacity,WinnerParts.Count());
+				share/=Math.Min(WinnersCapacity, WinnerParts.Count());
 			}
 			part.Reward=share;
 			part.DrawnRank=d.order;
