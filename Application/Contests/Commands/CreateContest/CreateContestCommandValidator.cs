@@ -28,6 +28,7 @@ public class CreateContestCommandValidator : AbstractValidator<CreateContestComm
 
         RuleFor(v =>(new { v.WinnersCapacity,v.ParticipationCapacity }))
             .Must(x=>x.ParticipationCapacity>=x.WinnersCapacity).WithMessage("The Contest Participations cap can't be lower than wincap.");
+
     }
 
 	public async Task<bool> BeValidChannelId(int chId, CancellationToken cancellationToken){

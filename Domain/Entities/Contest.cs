@@ -23,5 +23,6 @@ public class Contest : BaseAuditableEntity
 
     public IList<Participation> Participations { get; init; } = new List<Participation>(); 
     public DateTime? Calculated { get; set; }
+    public DateTime? CalculateOn { get; set; }
 }
 

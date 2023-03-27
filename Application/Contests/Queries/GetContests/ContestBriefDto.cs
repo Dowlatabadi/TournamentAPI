@@ -33,7 +33,7 @@ namespace Tournament.Application.Contests.Queries.GetContests
         public double ParticipationsTotalPoints { get; set; }
         public DateTime? Start { get; set; }
         public DateTime? Finish { get; set; }
-
+        public DateTime? CalculateOn { get; set; }
 
     }
 }
