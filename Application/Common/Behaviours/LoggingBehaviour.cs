@@ -22,7 +22,7 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
         string userName = _currentUserService.UserName ?? string.Empty;
 
 
-        _logger.LogInformation("Tournament Request: {Name} {@UserId} {@UserName} {@Request}",
-            requestName, userName, userName, request);
+        _logger.LogInformation("Tournament Request: {Name} {@UserName} {@Request}",
+            requestName, userName, request);
     }
 }
