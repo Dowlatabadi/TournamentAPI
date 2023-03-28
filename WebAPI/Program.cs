@@ -18,6 +18,7 @@ builder.Services.AddWebAPIServices(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Detailed Logs using 3rd pkg
 //Serilog.ILogger? logger = new LoggerConfiguration()
 //		.WriteTo.Console()
 //		.MinimumLevel.Debug().CreateLogger();

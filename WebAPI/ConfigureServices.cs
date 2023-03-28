@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Serilog.Extensions.Logging;
 using Serilog;
+using Serilog.Sinks.Elasticsearch;
+using System.Reflection;
 
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -18,7 +20,22 @@ public static class ConfigureServices
         Serilog.ILogger? serilogLogger = new LoggerConfiguration()
         .WriteTo.Console()
         .MinimumLevel.Debug().CreateLogger();
-        var microsoftLogger = new SerilogLoggerFactory(serilogLogger)
+
+        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        var serilogelasticLogger = new LoggerConfiguration()
+               .Enrich.FromLogContext()
+               .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfiguration:Uri"]))
+               {
+                   EmitEventFailure = EmitEventFailureHandling.RaiseCallback,
+                   BatchPostingLimit = 4000,
+                   MinimumLogEventLevel = Serilog.Events.LogEventLevel.Verbose,
+                   AutoRegisterTemplate = true,
+                   IndexFormat = $"TournamentAPI-{Assembly.GetExecutingAssembly().GetName().Name.ToLower()}-{DateTime.UtcNow:yyyy-MM}"
+               })
+               .Enrich.WithProperty("Environment", environment)
+               .ReadFrom.Configuration(configuration)
+               .CreateLogger();
+        var microsoftLogger = new SerilogLoggerFactory(serilogelasticLogger)
     .CreateLogger("");
         services.AddSingleton<Microsoft.Extensions.Logging.ILogger>(microsoftLogger);
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
@@ -37,7 +54,7 @@ public static class ConfigureServices
 
         services.AddSwaggerGen(option =>
                 {
-					option.EnableAnnotations();
+                    option.EnableAnnotations();
 
                     option.SwaggerDoc("v1", new OpenApiInfo { Title = "Tournament API", Version = "v1" });
 
