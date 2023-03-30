@@ -70,12 +70,10 @@ public class DrawContestCommandHandler : IRequestHandler<DrawContestCommand,Unit
 			var part=Participations.Where(x=>x.Id==d.item).First();
 
 			if (contest.WeightedReward){
-				share=TotalSpent;
-				share=share*(part.Spent/TotalWinnersSpent);
+				share= TotalSpent * (part.Spent/TotalWinnersSpent);
 			}
 			else{
-				share=contest.Reward;
-				share/=Math.Min(WinnersCapacity, WinnerParts.Count());
+				share= contest.Reward/Math.Min(WinnersCapacity, WinnerParts.Count());
 			}
 			part.Reward=share;
 			part.DrawnRank=d.order;
