@@ -4,9 +4,10 @@ using Tournament.Application.Common.Exceptions;
 using Tournament.Domain.Entities;
 using MediatR;
 using Tournament.Application.Common.Security;
+using AutoMapper;
+
 namespace Tournament.Application.Participations.Commands.CreateParticipation;
 
-[Authorize]
 public record CreateParticipationCommand : IRequest<int>
 {
 	public int ContestId { get; init; }
@@ -21,14 +22,31 @@ public class CreateParticipationCommandHandler : IRequestHandler<CreateParticipa
 	{
 		_context = context;
 	}
-	public async Task<int> Handle(CreateParticipationCommand request, CancellationToken cancellationToken)
+    //should only happen when consumed from Q, direct call should never reach here otherwise cost can't be redeemed
+    public async Task<int> Handle(CreateParticipationCommand request, CancellationToken cancellationToken)
 	{
-		Contest contest=await _context.Contests.Include(x=>x.Questions).ThenInclude(x=>x.Options).FirstOrDefaultAsync(x=>x.Id==request.ContestId);
+		var iddel=_context.GetHashCode();
+		var contest=await _context.Contests.Include(x=>x.Questions).ThenInclude(x=>x.Options).FirstOrDefaultAsync(x=>x.Id==request.ContestId);
+
 		if (contest== null){
+			//results in redeem
 			throw new NotFoundException (nameof(contest),request.ContestId);
 		}
 
-		var entity = new Participation{
+        if (contest.Participations.Any(x=>x.DrawnRank>0))
+        {
+            //results in redeem
+            throw new NotFoundException(nameof(contest), request.ContestId);
+        }
+
+        var participated = await _context.Participations.FirstOrDefaultAsync(x => x.AccountId == request.AccountId && x.ContestId==request.ContestId);
+        if (participated != null)
+        {
+			//means already participated and does nothing (further chekings should have been done before sending to Q by the producer)
+			return 0;
+        } 
+
+        var entity = new Participation{
 			AccountId=request.AccountId,
 				ContestId=request.ContestId,
 				Spent=request.Spent,

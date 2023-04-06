@@ -1,5 +1,6 @@
 using Tournament.Infrastructure.Persistence;
 using Tournament.WebAPI.Middlewares;
+using Tournament.Application.Common.MQ;
 using Swashbuckle.AspNetCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -24,8 +25,9 @@ builder.Services.AddSwaggerGen();
 //		.MinimumLevel.Debug().CreateLogger();
 //builder.Host.UseSerilog(logger);
 var app = builder.Build();
-
 //app.UseSerilogRequestLogging();
+
+var MQconsumer=app.Services.GetService<IMessageConsumerService>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

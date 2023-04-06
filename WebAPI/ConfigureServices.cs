@@ -1,4 +1,5 @@
 using Tournament.Application.Common.Interfaces;
+using Tournament.Application.Common.MQ;
 using Tournament.WebAPI.Filters;
 using Tournament.WebAPI.Authorization;
 using Tournament.WebAPI.Services;
@@ -42,7 +43,7 @@ public static class ConfigureServices
         jwtOptions? jwtoptions = configuration.GetSection("jwt").Get<jwtOptions>();
         services.AddSingleton<jwtOptions>(jwtoptions);
         services.AddSingleton<IJwtUtils, JwtUtils>();
-
+        services.AddSingleton<IMessageConsumerService, MessageConsumerService>();
         services.AddControllers(options =>
                 options.Filters.Add<ApiExceptionFilterAttribute>());
 
