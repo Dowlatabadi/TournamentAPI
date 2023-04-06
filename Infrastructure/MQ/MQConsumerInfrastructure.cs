@@ -18,13 +18,13 @@ namespace Infrastructure.MQ
         private readonly IModel channel;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _ServiceScopeFactory;
-        public MQConsumerInfrastructure(MQConsumerOptions? options, ILogger logger, IServiceScopeFactory ServiceScopeFactory)
+        public MQConsumerInfrastructure(IOptions<MQConsumerOptions> options, ILogger logger, IServiceScopeFactory ServiceScopeFactory)
         {
             _ServiceScopeFactory = ServiceScopeFactory;
             _logger=logger;
             try
             {
-                _options = options;
+                _options = options.Value;
                 var factory = new RabbitMQ.Client.ConnectionFactory()
                 {
                     UserName = _options.username,

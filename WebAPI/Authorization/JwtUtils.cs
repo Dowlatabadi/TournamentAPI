@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 public interface IJwtUtils
 {
@@ -17,19 +18,19 @@ public class jwtOptions {
 }
 public class JwtUtils : IJwtUtils
 {
-	private readonly IConfiguration _configuration;
+	private readonly jwtOptions _options;
 
-    public JwtUtils(IConfiguration configuration)
+    public JwtUtils(IConfiguration configuration,IOptions<jwtOptions> options)
     {
-		_configuration= configuration;
+        _options=options.Value;
     }
 
     public string GenerateToken(string username)
     {
         // generate token that is valid for minutes
         var tokenHandler = new JwtSecurityTokenHandler();
-		var phrase=_configuration.GetSection("jwt").GetValue<string>("phrase");
-		var minutes=_configuration.GetSection("jwt").GetValue<int>("minutes");
+		var phrase=_options.phrase;
+		var minutes=_options.minutes;
         var key = Encoding.ASCII.GetBytes(phrase);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -47,7 +48,7 @@ public class JwtUtils : IJwtUtils
             return null;
 
         var tokenHandler = new JwtSecurityTokenHandler();
-		var phrase=_configuration.GetSection("jwt").GetValue<string>("phrase");
+		var phrase=_options.phrase;
         var key = Encoding.ASCII.GetBytes(phrase);
         try
         {

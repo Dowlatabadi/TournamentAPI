@@ -42,8 +42,7 @@ public static class ConfigureServices
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IIdentityService, IdentityService>();
 
-        MQConsumerOptions? mqconsumerOptions = configuration.GetSection("mqconsumer").Get<MQConsumerOptions>();
-        services.AddSingleton<MQConsumerOptions?>(mqconsumerOptions);
+        services.Configure<MQConsumerOptions>(configuration.GetSection("mqconsumer"));
         services.AddSingleton<IMQInfrastructure, MQConsumerInfrastructure>();
 
         

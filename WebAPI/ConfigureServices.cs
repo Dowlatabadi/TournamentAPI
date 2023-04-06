@@ -40,8 +40,7 @@ public static class ConfigureServices
     .CreateLogger("");
         services.AddSingleton<Microsoft.Extensions.Logging.ILogger>(microsoftLogger);
         services.AddSingleton<ICurrentUserService, CurrentUserService>();
-        jwtOptions? jwtoptions = configuration.GetSection("jwt").Get<jwtOptions>();
-        services.AddSingleton<jwtOptions>(jwtoptions);
+        services.Configure<jwtOptions>(configuration.GetSection("jwt"));
         services.AddSingleton<IJwtUtils, JwtUtils>();
         services.AddSingleton<IMessageConsumerService, MessageConsumerService>();
         services.AddControllers(options =>
