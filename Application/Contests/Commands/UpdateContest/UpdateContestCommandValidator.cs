@@ -21,8 +21,8 @@ public class UpdateContestCommandValidator : AbstractValidator<UpdateContestComm
             .NotEmpty().WithMessage("ChannelId is required.")
             .MustAsync(BeValidChannelId).WithMessage("The Specified ChannelId doesn't Exist.");
 
-        RuleFor(v => new { v.calculateOn, v.Finish })
-            .Must(x => x.calculateOn > x.Finish).WithMessage("Calculation time must be greater than Finish time.");
+        RuleFor(v => new { v.CalculateOn, v.Finish })
+            .Must(x => x.CalculateOn > x.Finish).WithMessage("Calculation time must be greater than Finish time.");
 
         RuleFor(v => new { v.Start, v.Finish })
     .Must(x => x.Finish > x.Start).WithMessage("Finish time must be greater than Start time.");

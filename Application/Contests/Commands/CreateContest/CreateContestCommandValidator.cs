@@ -21,7 +21,14 @@ public class CreateContestCommandValidator : AbstractValidator<CreateContestComm
 			.NotEmpty().WithMessage("ChannelId is required.")
 			.MustAsync(BeValidChannelId).WithMessage("The Specified ChannelId doesn't Exist.");
 
-		RuleFor(v=>v.Reward)
+        RuleFor(v => new { v.CalculateOn, v.Finish })
+    .Must(x => x.CalculateOn > x.Finish).WithMessage("Calculation time must be greater than Finish time.");
+
+        RuleFor(v => new { v.Start, v.Finish })
+    .Must(x => x.Finish > x.Start).WithMessage("Finish time must be greater than Start time.");
+
+
+        RuleFor(v=>v.Reward)
 			.Must(x=>x>0)
 			.When(x=>x.WeightedReward==false)
 			.WithMessage("Equal rewards is valid iff players don't spend (Reward>0 <=> WeightedReward==False)");

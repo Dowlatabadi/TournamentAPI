@@ -20,7 +20,7 @@ public sealed record UpdateContestCommand : IRequest<int>
 	public bool IsActive {get; init;}
 	public DateTime? Start { get; set; }
 	public DateTime? Finish { get; set; }
-	public DateTime? calculateOn { get; set; }
+	public DateTime? CalculateOn { get; set; }
 	public bool WeightedDraw {get; init;}
 	public bool WeightedReward {get; init;} 
 	public double Reward {get; init;} 
@@ -107,6 +107,7 @@ public class UpdateContestCommandHandler : IRequestHandler<UpdateContestCommand,
 		oldEntity.IsActive=request.IsActive;
 		oldEntity.Start=request.Start;
 		oldEntity.Finish=request.Finish;
+		oldEntity.CalculateOn = request.CalculateOn;
 		oldEntity.WeightedDraw = request.WeightedDraw;
 		oldEntity.WeightedReward=request.WeightedReward;
 		oldEntity.Reward=request.Reward;
