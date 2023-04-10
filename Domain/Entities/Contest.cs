@@ -18,7 +18,7 @@ public class Contest : BaseAuditableEntity
     public string guid { get; set; } = "";
     public int WinnersCapacity {get; set;} 
     public int ParticipationCapacity { get; set;} 
-    public IList<Question> Questions { get; init; } = new List<Question>(); 
+    public IList<Question> Questions { get; set; } = new List<Question>(); 
 
 
     public IList<Participation> Participations { get; init; } = new List<Participation>(); 
