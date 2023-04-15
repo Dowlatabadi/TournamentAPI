@@ -18,11 +18,11 @@ namespace Tournament.Application.Common.MQ
 {
     public class MessageConsumerService : IMessageConsumerService
     {
-        private readonly ILogger<MessageConsumerService> _logger;
+        private readonly ILogger _logger;
         private readonly IMQInfrastructure _MQInfrastructure;
         private readonly IMediator _mediator;
 
-        public MessageConsumerService(ILogger<MessageConsumerService> logger, IMQInfrastructure mqInfrastructure)
+        public MessageConsumerService(ILogger logger, IMQInfrastructure mqInfrastructure)
         {
             _logger = logger;
             _MQInfrastructure = mqInfrastructure;
