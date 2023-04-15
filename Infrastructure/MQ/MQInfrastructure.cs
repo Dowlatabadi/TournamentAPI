@@ -19,6 +19,7 @@ namespace Infrastructure.MQ
         private readonly IModel channel;
         private readonly ILogger _logger;
         private readonly IServiceScopeFactory _ServiceScopeFactory;
+        private readonly IBasicProperties _BasicProperties;
         public MQInfrastructure(IOptions<MQConsumerOptions> ConsumerOptions, IOptions<MQPublisherOptions> PubOptions, ILogger logger, IServiceScopeFactory ServiceScopeFactory)
         {
             _ServiceScopeFactory = ServiceScopeFactory;
@@ -41,6 +42,7 @@ namespace Infrastructure.MQ
                 channel = connection.CreateModel();
                 channel.BasicQos(0, 10, false);
                 channel.ExchangeDeclare(exchange: _PubOptions.exchange, type: ExchangeType.Direct);
+                _BasicProperties=channel.CreateBasicProperties();
             }
             catch (Exception ex)
             {
@@ -51,16 +53,16 @@ namespace Infrastructure.MQ
         {
             try
             {
-                var body = Encoding.UTF8.GetBytes(message);
+                var properties = channel.CreateBasicProperties();
                 channel.BasicPublish(exchange: _PubOptions.exchange,
                                      routingKey: _PubOptions.routingkey,
-                                     basicProperties: null,
+                                     basicProperties: _BasicProperties,
                                      body: body);
-                _logger.LogInformation("Sent message {@message} to exchange {@exchange}", message, _PubOptions.exchange);
+                _logger.LogInformation("[PUBMQ] Sent message {@message} to exchange {@exchange}", message, _PubOptions.exchange);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,"failed to Send message {@message}", message);
+                _logger.LogError(ex,"[PUBMQ] failed to Send message {@message}", message);
 
             }
         }

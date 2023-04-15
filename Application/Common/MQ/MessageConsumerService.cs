@@ -30,13 +30,13 @@ namespace Tournament.Application.Common.MQ
         }
         private bool Consume(byte[] receivedBytes, IServiceScopeFactory serviceScopeFactory)
         {
-            CompeteMQMessage? CompeteM = null;
+            CompeteMQMessage CompeteM ;
             using (var scope = serviceScopeFactory.CreateScope())
             {
                 var mediator = scope.ServiceProvider.GetRequiredService<ISender>();
                 try
                 {
-                    CompeteM = JsonSerializer.Deserialize<CompeteMQMessage>(Encoding.UTF8.GetString(receivedBytes));
+                    CompeteM = JsonSerializer.Deserialize<CompeteMQMessage?>(Encoding.UTF8.GetString(receivedBytes));
                     try
                     {
                         CreateParticipationCommand CPCommand = new CreateParticipationCommand
