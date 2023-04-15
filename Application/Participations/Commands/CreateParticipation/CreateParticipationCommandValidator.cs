@@ -44,13 +44,19 @@ public class CreateParticipationCommandValidator : AbstractValidator<CreateParti
     }
     public async Task<bool> NumberOfAnswersMatch(CreateParticipationCommand req, CancellationToken cancellationToken)
     {
-        var questions = _context.Questions.Where(x => x.ContestId == req.ContestId);
-        return questions.Count() == req.OptionIds.Count;
+        var questions =await _context.Questions.Where(x => x.ContestId == req.ContestId).ToListAsync();
+        if (questions == null) return false;
+        return questions.Count() == (req.OptionIds?.Count ?? 0);
     }
 
     public async Task<bool> NotDupQuestion(CreateParticipationCommand req, CancellationToken cancellationToken)
     {
-        var options = _context.Options.Where(x => x.Question.ContestId == req.ContestId);
+        if (req.OptionIds == null) { return false; }
+        var qs = _context.Questions.Where(x => x.ContestId == req.ContestId);
+        if (!await qs.AnyAsync()) return false;
+        var qids = await qs.Select(x => x.Id).ToListAsync();
+        var options = _context.Options.Where(x => qids.Contains( x.QuestionId));
+        if (!options.Any()) return false;
         return await options.Where(x => req.OptionIds.Contains(x.Id)).GroupBy(x => x.QuestionId).AllAsync(x => x.Count() == 1);
     }
 

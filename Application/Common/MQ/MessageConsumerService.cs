@@ -87,7 +87,7 @@ namespace Tournament.Application.Common.MQ
                             {
                                 _logger.LogCritical("[MQ] Account Already participated shouldn't have occured!!!: {@message}", CompeteM);
                             }
-                            var agg_erros = ex.InnerExceptions?.Where((x => x is ValidationException)).Select(x => x.Message).ToList();
+                            var agg_erros = ex.InnerExceptions?.Where((x => x is ValidationException)).SelectMany(x =>((ValidationException) x).Errors.SelectMany(y=>y.Value)).ToList();
                             var erros = string.Join(',', agg_erros);
                             _logger.LogError(ex, $"[MQ] Queued back in redeem Queue, Agg Reason: {erros ?? ""}");
                             var topublish = new { reason = $"command had agg error {erros ?? ex.Message}", contestId = CompeteM.ContestId, accountId = CompeteM.AccountId, spent = CompeteM.Spent };
