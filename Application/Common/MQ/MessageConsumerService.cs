@@ -50,14 +50,14 @@ namespace Tournament.Application.Common.MQ
                         if (result == 0)
                         {
                             //result==0 according to the handler means already participated
-                            _logger.LogInformation("Dup message received and dumped successfully: @message", CompeteM);
+                            _logger.LogInformation("[MQ] Dup message received and dumped successfully: @message", CompeteM);
                         }
-                        _logger.LogInformation("Message proccessed succesfully :@Message", CompeteM);
+                        _logger.LogInformation("[MQ] Message proccessed succesfully :@Message", CompeteM);
                         return true;
                     }
                     catch (NotFoundException ex)
                     {
-                        _logger.LogError(ex,"Queued back in redeem Queue: @message", CompeteM);
+                        _logger.LogError(ex, "[MQ] Queued back in redeem Queue: @message", CompeteM);
                         var topublish = new { reason = "contest might be deleted/drawn/inactivated", contestId = CompeteM.ContestId, accountId = CompeteM.AccountId, spent = CompeteM.Spent };
                         var jsonString = JsonSerializer.Serialize(topublish);
                         _MQInfrastructure.PublishMessage(jsonString);
@@ -68,9 +68,9 @@ namespace Tournament.Application.Common.MQ
                         //malformed input(options mistmach) is not handled in app 1 and should be redeemed
                         if (ex.Message.Contains("Account Already participated"))
                         {
-                            _logger.LogCritical("Account Already participated shouldn't have occured!!!: @message", CompeteM);
+                            _logger.LogCritical("[MQ] Account Already participated shouldn't have occured!!!: @message", CompeteM);
                         }
-                        _logger.LogError(ex,"Queued back in redeem Queue: @message ", CompeteM );
+                        _logger.LogError(ex, "[MQ] Queued back in redeem Queue: @message ", CompeteM );
                         var topublish = new { reason = $"command couldn't be validate {ex.Message ?? ""}", contestId = CompeteM.ContestId, accountId = CompeteM.AccountId, spent = CompeteM.Spent };
                         var jsonString = JsonSerializer.Serialize(topublish);
                         _MQInfrastructure.PublishMessage(jsonString);
@@ -83,28 +83,28 @@ namespace Tournament.Application.Common.MQ
                         {
                             if (ex.InnerExceptions.Any(x => x.Message.Contains("Account Already participated")))
                             {
-                                _logger.LogCritical("Account Already participated shouldn't have occured!!!: @message", CompeteM);
+                                _logger.LogCritical("[MQ] Account Already participated shouldn't have occured!!!: @message", CompeteM);
                             }
-                            _logger.LogError(ex, $"Queued back in redeem Queue: @message Reason: {String.Join(',', ex.InnerExceptions?.SelectMany(x => x.Message))}",  CompeteM);
+                            _logger.LogError(ex, $"[MQ] Queued back in redeem Queue: @message Reason: {String.Join(',', ex.InnerExceptions?.SelectMany(x => x.Message))}",  CompeteM);
                             var topublish = new { reason = $"command had agg error {ex.InnerExceptions?.FirstOrDefault()?.Message ?? ex.Message}", contestId = CompeteM.ContestId, accountId = CompeteM.AccountId, spent = CompeteM.Spent };
                             var jsonString = JsonSerializer.Serialize(topublish);
                             _MQInfrastructure.PublishMessage(jsonString);
                             return true;
                         }
                         //if agg error is not validation it must be checked
-                        _logger.LogError($"Error during message proccess[REQUEUED]: @Message", CompeteM);
+                        _logger.LogError($"[MQ] Error during message proccess[REQUEUED]: @Message", CompeteM);
                         return false;
                     }
                     catch (Exception ex)
                     {
                         //something went wrong it must be checked
-                        _logger.LogError(ex,$"Error during message proccess[REQUEUED]: @Message", CompeteM);
+                        _logger.LogError(ex,$"[MQ] Error during message proccess[REQUEUED]: @Message", CompeteM);
                         return false;
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex,$"Unable to deserialize message!! it is ignored for good");
+                    _logger.LogError(ex,$"[MQ] Unable to deserialize message!! it is ignored for good");
                     return true;
                 }
             }
