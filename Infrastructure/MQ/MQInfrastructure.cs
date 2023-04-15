@@ -44,7 +44,7 @@ namespace Infrastructure.MQ
             }
             catch (Exception ex)
             {
-                _logger.LogError("couldn't create connection using specified paramaeters : @params", _ConsumerOptions, ex);
+                _logger.LogError(ex,"couldn't create connection using specified paramaeters : {@params}", _ConsumerOptions);
             }
         }
         public void PublishMessage(string message)
@@ -56,11 +56,11 @@ namespace Infrastructure.MQ
                                      routingKey: _PubOptions.routingkey,
                                      basicProperties: null,
                                      body: body);
-                _logger.LogInformation("Sent message @message to exchange @ex", message, _PubOptions.exchange);
+                _logger.LogInformation("Sent message {@message} to exchange {@exchange}", message, _PubOptions.exchange);
             }
             catch (Exception ex)
             {
-                _logger.LogError("failed to Send message @message", message,ex);
+                _logger.LogError(ex,"failed to Send message {@message}", message);
 
             }
         }
@@ -81,7 +81,7 @@ namespace Infrastructure.MQ
                     }
                     else
                     {
-                        _logger.LogError("Failed consuming execution message: @body requeing. ", ea.Body);
+                        _logger.LogError("Failed consuming execution message: {@body} requeing. ", ea.Body);
                         channel.BasicNack(ea.DeliveryTag, false, requeue: true);
                     }
                 };
@@ -92,7 +92,7 @@ namespace Infrastructure.MQ
             }
             catch (Exception ex)
             {
-                _logger.LogError("couldn't connect the consumer to the Queue: @params", ex);
+                _logger.LogError(ex,"couldn't connect the consumer to the Queue: {@params}", _ConsumerOptions.queuename);
             }
         }
     }
