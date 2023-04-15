@@ -42,7 +42,6 @@ namespace Infrastructure.MQ
                 channel = connection.CreateModel();
                 channel.BasicQos(0, 10, false);
                 channel.ExchangeDeclare(exchange: _PubOptions.exchange, type: ExchangeType.Direct);
-                _BasicProperties=channel.CreateBasicProperties();
             }
             catch (Exception ex)
             {
@@ -53,7 +52,7 @@ namespace Infrastructure.MQ
         {
             try
             {
-                var properties = channel.CreateBasicProperties();
+                var body = Encoding.UTF8.GetBytes(message);
                 channel.BasicPublish(exchange: _PubOptions.exchange,
                                      routingKey: _PubOptions.routingkey,
                                      basicProperties: _BasicProperties,
