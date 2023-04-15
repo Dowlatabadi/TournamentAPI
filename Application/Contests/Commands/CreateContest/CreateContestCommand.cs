@@ -10,7 +10,6 @@ public record CreateContestCommand : IRequest<int>
 	public string? Title { get; init; }
 	public string? Description { get; init; }
 	public int ChannelId { get; init; }
-	public bool IsActive {get; init;}
 	public DateTime? Start { get; set; }
 	public DateTime? Finish { get; set; }
 	public bool WeightedDraw {get; init;}
@@ -33,7 +32,7 @@ public class CreateContestCommandHandler : IRequestHandler<CreateContestCommand,
 		entity.Title = request.Title;
 		entity.Description = request.Description;
 		entity.ChannelId=request.ChannelId;
-		entity.IsActive=request.IsActive;
+		entity.IsActive=true;
 		entity.Start=request.Start;
 		entity.Finish=request.Finish;
 		entity.CalculateOn = request.CalculateOn;

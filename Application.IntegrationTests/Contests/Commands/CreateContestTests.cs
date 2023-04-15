@@ -27,7 +27,6 @@ public class CreateContestTests : BaseTestFixture
         var ch_id = await SendAsync(command1);
         var command = new CreateContestCommand
         {
-            IsActive = true,
             Start = DateTime.Now,
             Finish = DateTime.Now.AddDays(2),
             WeightedDraw = true,

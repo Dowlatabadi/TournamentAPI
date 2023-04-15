@@ -43,7 +43,8 @@ public static class ConfigureServices
         services.AddTransient<IIdentityService, IdentityService>();
 
         services.Configure<MQConsumerOptions>(configuration.GetSection("mqconsumer"));
-        services.AddSingleton<IMQInfrastructure, MQConsumerInfrastructure>();
+        services.Configure<MQPublisherOptions>(configuration.GetSection("mqpublish"));
+        services.AddSingleton<IMQInfrastructure, MQInfrastructure>();
 
         
         services.AddAuthorization(options =>

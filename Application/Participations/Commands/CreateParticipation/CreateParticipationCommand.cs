@@ -38,7 +38,11 @@ public class CreateParticipationCommandHandler : IRequestHandler<CreateParticipa
             //results in redeem
             throw new NotFoundException(nameof(contest), request.ContestId);
         }
-
+        if (!contest.IsActive)
+        {
+            //results in redeem
+            throw new NotFoundException(nameof(contest), request.ContestId);
+        }
         var participated = await _context.Participations.FirstOrDefaultAsync(x => x.AccountId == request.AccountId && x.ContestId==request.ContestId);
         if (participated != null)
         {

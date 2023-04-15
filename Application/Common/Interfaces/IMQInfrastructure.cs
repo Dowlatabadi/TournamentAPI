@@ -10,5 +10,6 @@ namespace Application.Common.Interfaces
     public interface IMQInfrastructure
     {
         void ConfigureConsumer(Func<byte[],IServiceScopeFactory ,bool> consumeAction);
+        void PublishMessage(string message);
     }
 }

@@ -17,7 +17,6 @@ public sealed record UpdateContestCommand : IRequest<int>
     public string? Description { get; init; }
     public int ChannelId { get; init; }
     public int ContestId { get; init; }
-    public bool IsActive { get; init; }
     public DateTime? Start { get; set; }
     public DateTime? Finish { get; set; }
     public DateTime? CalculateOn { get; set; }
@@ -105,7 +104,7 @@ public class UpdateContestCommandHandler : IRequestHandler<UpdateContestCommand,
         oldEntity.Title = request.Title;
         oldEntity.Description = request.Description;
         oldEntity.ChannelId = request.ChannelId;
-        oldEntity.IsActive = request.IsActive;
+		oldEntity.IsActive=true;
         oldEntity.Start = request.Start;
         oldEntity.Finish = request.Finish;
         oldEntity.CalculateOn = request.CalculateOn;
