@@ -86,7 +86,7 @@ namespace Tournament.Application.Common.MQ
                                 _logger.LogCritical("[MQ] Account Already participated shouldn't have occured!!!: {@message}", CompeteM);
                             }
                             _logger.LogError(ex, "[MQ] Queued back in redeem Queue: {@message}"+$" Reason: {String.Join(',', ex.InnerExceptions?.Select(x => x.Message))}",  CompeteM);
-                            var topublish = new { reason = $"command had agg error {ex.InnerExceptions?.FirstOrDefault()?.Message ?? ex.Message}", contestId = CompeteM.ContestId, accountId = CompeteM.AccountId, spent = CompeteM.Spent };
+                            var topublish = new { reason = $"command had agg error {ex.InnerExceptions?.Where((x => x is ValidationException)).FirstOrDefault()?.Message ?? ex.Message}", contestId = CompeteM.ContestId, accountId = CompeteM.AccountId, spent = CompeteM.Spent };
                             var jsonString = JsonSerializer.Serialize(topublish);
                             _MQInfrastructure.PublishMessage(jsonString);
                             return true;
