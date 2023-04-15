@@ -64,14 +64,16 @@ namespace Tournament.Application.Common.MQ
                         return true;
                     }
                     catch (ValidationException ex)
-                    {  //capacity and already are handled in app 1 and should not be happened
+                    {  
+                        //capacity and already are handled in app 1 and should not be happened
                         //malformed input(options mistmach) is not handled in app 1 and should be redeemed
                         if (ex.Message.Contains("Account Already participated"))
                         {
                             _logger.LogCritical("[MQ] Account Already participated shouldn't have occured!!!: {@message}", CompeteM);
                         }
-                        _logger.LogError(ex, "[MQ] Queued back in redeem Queue: {@message} ", CompeteM );
-                        var topublish = new { reason = $"command couldn't be validate {ex.Message ?? ""}", contestId = CompeteM.ContestId, accountId = CompeteM.AccountId, spent = CompeteM.Spent };
+                        var errors = ex.Errors.SelectMany(x => x.Value).ToString();
+                        _logger.LogError(ex, "[MQ] Queued back in redeem Queue: {@message} :{@validations} ", CompeteM,errors);
+                        var topublish = new { reason = $"command couldn't be validate {errors ?? ex.Message ?? ""}", contestId = CompeteM.ContestId, accountId = CompeteM.AccountId, spent = CompeteM.Spent };
                         var jsonString = JsonSerializer.Serialize(topublish);
                         _MQInfrastructure.PublishMessage(jsonString);
                         return true;
@@ -85,8 +87,9 @@ namespace Tournament.Application.Common.MQ
                             {
                                 _logger.LogCritical("[MQ] Account Already participated shouldn't have occured!!!: {@message}", CompeteM);
                             }
+                            var agg_erros = ex.InnerExceptions?.Where((x => x is ValidationException)).Select(x => x.Message).ToList();
                             _logger.LogError(ex, $"[MQ] Queued back in redeem Queue, Agg Reason: {ex.ToString()}");
-                            var topublish = new { reason = $"command had agg error {ex.InnerExceptions?.Where((x => x is ValidationException)).FirstOrDefault()?.Message ?? ex.Message}", contestId = CompeteM.ContestId, accountId = CompeteM.AccountId, spent = CompeteM.Spent };
+                            var topublish = new { reason = $"command had agg error {string.Join(',', agg_erros) ?? ex.Message}", contestId = CompeteM.ContestId, accountId = CompeteM.AccountId, spent = CompeteM.Spent };
                             var jsonString = JsonSerializer.Serialize(topublish);
                             _MQInfrastructure.PublishMessage(jsonString);
                             return true;
