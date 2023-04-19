@@ -62,7 +62,7 @@ public partial class Testing
 				new Channel{
 				Title="Channel title 1",
 				Contests={
-				new Contest { Title = "Contest1",WinnersCapacity=3,WeightedDraw=true,ParticipationCapacity=100,Start=DateTime.Now.AddDays(-10),Finish=DateTime.Now.AddDays(10),
+				new Contest {IsActive=true, Title = "Contest1",WinnersCapacity=3,WeightedDraw=true,ParticipationCapacity=100,Start=DateTime.Now.AddDays(-10),Finish=DateTime.Now.AddDays(10),
 
                 Questions =
 				{

@@ -29,6 +29,7 @@ public class CreateContestTests : BaseTestFixture
         {
             Start = DateTime.Now,
             Finish = DateTime.Now.AddDays(2),
+            CalculateOn = DateTime.Now.AddDays(2).AddSeconds(1),
             WeightedDraw = true,
             WeightedReward = false,
             Reward = 150d,
@@ -54,12 +55,13 @@ public class CreateContestTests : BaseTestFixture
     [Test]
     public async Task ShouldCreateQuestion()
     {
-
+        var userId = await RunAsAdministratorAsync();
         SeedData();
         var Qcommand = new CreateQuestionCommand
         {
             Title = "Question test",
-            ContestId = 1
+            ContestId = 1,
+            Order = 1,
         };
 
         var qid = await SendAsync(Qcommand);
@@ -73,12 +75,13 @@ public class CreateContestTests : BaseTestFixture
     [Test]
     public async Task ShouldCreateOption()
     {
-
+        var userId = await RunAsAdministratorAsync();
         SeedData();
         var Ocommand = new CreateOptionCommand
         {
             Title = "Question test",
-            QuestionId = 1
+            QuestionId = 1,
+            Order=1,
         };
 
         var oid = await SendAsync(Ocommand);
@@ -92,7 +95,7 @@ public class CreateContestTests : BaseTestFixture
     [Test]
     public async Task ShouldCreateParticipation()
     {
-
+        var userId = await RunAsAdministratorAsync();
         SeedData();
         var AccId = "%$#33dfrrTEST";
         var Pcommand = new CreateParticipationCommand
@@ -118,6 +121,7 @@ public class CreateContestTests : BaseTestFixture
     [Test]
     public async Task ShouldSetOptionAsAnswer()
     {
+        var userId = await RunAsAdministratorAsync();
         SeedData();
         var Scommand = new SetAsAnswerOptionCommand
         {

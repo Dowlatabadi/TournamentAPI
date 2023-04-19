@@ -17,7 +17,8 @@ public class GetContestTests : BaseTestFixture
 	[Test]
 	public async Task ShouldGetChannels()
 	{
-		SeedData();
+        var userId = await RunAsAdministratorAsync();
+        SeedData();
 		var query1 = new GetChannelsQuery();
 
 		var result = await SendAsync(query1);
@@ -29,7 +30,8 @@ public class GetContestTests : BaseTestFixture
 	[Test]
 	public async Task ShouldGetChannel()
 	{
-		SeedData();
+        var userId = await RunAsAdministratorAsync();
+        SeedData();
 		var query1 = new GetChannelQuery(1);
 
 		var result = await SendAsync(query1);
@@ -41,7 +43,8 @@ public class GetContestTests : BaseTestFixture
 	[Test]
 	public async Task ShouldGetParticipations()
 	{
-		SeedData();
+        var userId = await RunAsAdministratorAsync();
+        SeedData();
 		var query1 = new GetContestParticipationsQuery(1,1,100){
 		};
 		var result = await SendAsync(query1);
@@ -53,7 +56,9 @@ public class GetContestTests : BaseTestFixture
 	[Test]
 	public async Task ShouldGetContest()
 	{
-		SeedData();
+        var userId = await RunAsAdministratorAsync();
+
+        SeedData();
 		var query1 = new GetContestQuery(1);
 
 		var result = await SendAsync(query1);
@@ -67,7 +72,9 @@ public class GetContestTests : BaseTestFixture
 	[Test]
 	public async Task ShouldGetStat()
 	{
-		SeedData();
+        var userId = await RunAsAdministratorAsync();
+
+        SeedData();
 		var query1 = new GetContestStatQuery(1);
 
 		var result = await SendAsync(query1);
@@ -89,7 +96,9 @@ public class GetContestTests : BaseTestFixture
 	[Test]
 	public async Task ShouldGetQuestions()
 	{
-		SeedData();
+        var userId = await RunAsAdministratorAsync();
+
+        SeedData();
 		var query1 = new GetContestQuestionsQuery(1);
 
 		var result = await SendAsync(query1);
@@ -102,7 +111,9 @@ public class GetContestTests : BaseTestFixture
 	[Test]
 	public async Task ShouldGetOptions()
 	{
-		SeedData();
+        var userId = await RunAsAdministratorAsync();
+
+        SeedData();
 		var query1 = new GetQuestionOptionsQuery(1);
 
 		var result = await SendAsync(query1);
@@ -114,7 +125,9 @@ public class GetContestTests : BaseTestFixture
 	[Test]
 	public async Task ShouldGetAccountParticipations()
 	{
-		SeedData();
+        var userId = await RunAsAdministratorAsync();
+
+        SeedData();
 		var query1 = new GetAccountParticipationsQuery("dsf43#");
 
 		var result = await SendAsync(query1);
