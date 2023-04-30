@@ -9,6 +9,7 @@ namespace Tournament.Application.Contests.Queries.GetStat
     public class OptionStatDto
     {
         public int OptionId { get; set; }
+        public int Order { get; set; }
         public double Rate { get; set; }
         public double RewadsSpent { get; set; }
         public int AnswersCount { get; set; }

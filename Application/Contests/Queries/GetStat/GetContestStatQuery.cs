@@ -39,7 +39,8 @@ namespace Tournament.Application.Contests.Queries.GetStat
 								OptionId=y.Key,
 								RewadsSpent=y.ToList().Sum(z=>z.Participation.Spent),
 								Rate=a.Sum(z=>z.Participation.Spent)/ y.ToList().Sum(z => z.Participation.Spent),
-								AnswersCount=y.Count()
+								AnswersCount=y.Count(),
+								Order=(y.Any())? y.FirstOrDefault().Option.Order:0,
 								}).ToList()
 						});
 
