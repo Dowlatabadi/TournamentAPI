@@ -16,7 +16,7 @@ public record CreateContestCommand : IRequest<int>
 	public bool WeightedReward {get; init;} 
 	public double Reward {get; init;} 
 	public int WinnersCapacity {get; init;}
-	public int ParticipationCapacity { get; init; }
+	public int? ParticipationCapacity { get; init; }
     public DateTime? CalculateOn { get; set; }
 }
 public class CreateContestCommandHandler : IRequestHandler<CreateContestCommand, int>
@@ -40,7 +40,7 @@ public class CreateContestCommandHandler : IRequestHandler<CreateContestCommand,
 		entity.WeightedReward=request.WeightedReward;
 		entity.Reward=request.Reward;
 		entity.WinnersCapacity=request.WinnersCapacity;
-		entity.ParticipationCapacity = request.ParticipationCapacity;
+		entity.ParticipationCapacity = request.ParticipationCapacity ?? 0;
 		entity.Number = _context.Contests.Max(x => x.Number) + 1;
 
 		_context.Contests.Add(entity);

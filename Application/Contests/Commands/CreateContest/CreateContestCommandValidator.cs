@@ -27,14 +27,13 @@ public class CreateContestCommandValidator : AbstractValidator<CreateContestComm
         RuleFor(v => new { v.Start, v.Finish })
     .Must(x => x.Finish > x.Start).WithMessage("Finish time must be greater than Start time.");
 
-
         RuleFor(v=>v.Reward)
 			.Must(x=>x>0)
 			.When(x=>x.WeightedReward==false)
 			.WithMessage("Equal rewards is valid iff players don't spend (Reward>0 <=> WeightedReward==False)");
 
         RuleFor(v =>(new { v.WinnersCapacity,v.ParticipationCapacity }))
-            .Must(x=>x.ParticipationCapacity>=x.WinnersCapacity).WithMessage("The Contest Participations cap can't be lower than wincap.");
+            .Must(x=>(x.ParticipationCapacity ?? 100000 )>= x.WinnersCapacity).WithMessage("The Contest Participations cap can't be lower than wincap.");
 
     }
 
