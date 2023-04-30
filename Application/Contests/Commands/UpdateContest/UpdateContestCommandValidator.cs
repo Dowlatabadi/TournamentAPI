@@ -1,6 +1,7 @@
 using FluentValidation;
 using Tournament.Application.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Tournament.Application.Contests.Commands.UpdateContest;
 
@@ -21,6 +22,9 @@ public class UpdateContestCommandValidator : AbstractValidator<UpdateContestComm
             .NotEmpty().WithMessage("ChannelId is required.")
             .MustAsync(BeValidChannelId).WithMessage("The Specified ChannelId doesn't Exist.");
 
+        RuleFor(v => v)
+          .MustAsync(BeMinParticipated).WithMessage(x => $"Participations more than {x.ParticipationCapacity}.");
+
         RuleFor(v => new { v.CalculateOn, v.Finish })
             .Must(x => x.CalculateOn > x.Finish).WithMessage("Calculation time must be greater than Finish time.");
 
@@ -40,4 +44,23 @@ public class UpdateContestCommandValidator : AbstractValidator<UpdateContestComm
     {
         return await _context.Channels.AnyAsync(x => x.Id == chId);
     }
+    public async Task<bool> BeMinParticipated(UpdateContestCommand CMD, CancellationToken cancellationToken)
+    {
+        if (CMD.ParticipationCapacity == 0)
+        {
+            return true;
+        }
+        var contest =await _context.Contests.FirstOrDefaultAsync(x => x.Id == CMD.ContestId);
+        if (contest == null)
+        {
+            return true;
+        }
+        var parts = await _context.Participations.Where(x => x.ContestId == CMD.ContestId).CountAsync();
+        if (parts > CMD.ParticipationCapacity)
+        {
+            return false;
+        }
+        return true;
+    }
+
 }
