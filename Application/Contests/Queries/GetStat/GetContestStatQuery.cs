@@ -40,7 +40,7 @@ namespace Tournament.Application.Contests.Queries.GetStat
 								RewadsSpent=y.ToList().Sum(z=>z.Participation.Spent),
 								Rate=a.Sum(z=>z.Participation.Spent)/ y.ToList().Sum(z => z.Participation.Spent),
 								AnswersCount=y.Count(),
-								Order=(y.Any())? y.FirstOrDefault().Option.Order:0,
+								Order=(y.Any())? y.FirstOrDefault().Option.Order-1:0,
 								}).ToList()
 						});
 
