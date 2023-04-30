@@ -16,6 +16,7 @@ public class MappingProfile : Profile
         CreateMap<Contest, ContestBriefDto>()
             .ForMember(dest => dest.ParticipationsCount, opt => opt.MapFrom(src => src.Participations.Count()))
             .ForMember(dest => dest.ParticipationsTotalPoints, opt => opt.MapFrom(src => src.Participations.Sum(x => x.Spent)))
+            .ForMember(dest => dest.ParticipationCapacity, opt => opt.MapFrom(src => src.ParticipationCapacity))
             .ForMember(dest => dest.ChannelId, opt => opt.MapFrom(src => src.Channel.Id))
             .ForMember(dest => dest.ChannelTitle, opt => opt.MapFrom(src => src.Channel.Title))
             .ForMember(dest => dest.QuestionsCount, opt => opt.MapFrom(src => src.Questions.Count()));
