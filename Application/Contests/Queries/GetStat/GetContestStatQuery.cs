@@ -50,7 +50,7 @@ namespace Tournament.Application.Contests.Queries.GetStat
             //get all options
             var all_Questions_Options = _context.Questions.Include(x => x.Options)
                 .Where(x => x.ContestId == request.ContestId)
-                .ToDictionary(x => x.Id, x => x.Options.Select(x => new { x.Id, x.Order - 1 }));
+                .ToDictionary(x => x.Id, x => x.Options.Select(x => new { x.Id, x.Order }));
 
             //fill in the missing options with 0 stats
             foreach (var keyval in all_Questions_Options)
@@ -68,7 +68,7 @@ namespace Tournament.Application.Contests.Queries.GetStat
                                 AnswersCount = 0,
                                 RewadsSpent = 0,
                                 Rate = 0,
-                                Order = option.Order,
+                                Order = option.Order-1,
                             });
                     }
                     else
