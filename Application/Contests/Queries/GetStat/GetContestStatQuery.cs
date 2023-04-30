@@ -28,6 +28,7 @@ namespace Tournament.Application.Contests.Queries.GetStat
 
         public async Task<List<QuestionStatDto>> Handle(GetContestStatQuery request, CancellationToken cancellationToken)
         {
+            var res = new List<QuestionStatDto>();
             var ret = _context.Answers.Include(x => x.Option)
                 .Where(x => x.Participation.ContestId == request.ContestId)
                 .GroupBy(x => x.Option.QuestionId)
@@ -44,38 +45,53 @@ namespace Tournament.Application.Contests.Queries.GetStat
                         AnswersCount = y.Count(),
                         Order = (y.Any()) ? y.FirstOrDefault().Option.Order - 1 : 0,
                     }).ToList()
-                });
+                }).AsNoTracking();
 
             //get all options
             var all_Questions_Options = _context.Questions.Include(x => x.Options)
                 .Where(x => x.ContestId == request.ContestId)
-                .ToDictionary(x => x.Id, x => x.Options.Select(x => new { x.Id,x.Order}));
+                .ToDictionary(x => x.Id, x => x.Options.Select(x => new { x.Id, x.Order - 1 }));
 
             //fill in the missing options with 0 stats
             foreach (var keyval in all_Questions_Options)
             {
                 var q = ret.Where(x => x.QuestionId == keyval.Key).FirstOrDefault();
+                var stats = new List<OptionStatDto>();
                 foreach (var option in keyval.Value)
                 {
-                    if (!q.OptionsStats.Select(x=>x.OptionId).Contains(option.Id))
+                    if (!q.OptionsStats.Select(x => x.OptionId).Contains(option.Id))
                     {
-                        q.OptionsStats.Add(
+                        stats.Add(
                             new OptionStatDto
                             {
-                                OptionId= option.Id,
-                                AnswersCount=0,
-                                RewadsSpent=0,
+                                OptionId = option.Id,
+                                AnswersCount = 0,
+                                RewadsSpent = 0,
                                 Rate = 0,
-                                Order =option.Order,
+                                Order = option.Order,
                             });
                     }
+                    else
+                    {
+                        var stat = q.OptionsStats.FirstOrDefault(x => x.OptionId == option.Id);
+                        stats.Add(stat);
+                    }
+
+
                 }
+                res.Add(new QuestionStatDto
+                {
+                    AnswersCount = q.AnswersCount,
+                    OptionsStats = stats,
+                    QuestionId = q.QuestionId,
+                    RewadsSpent = q.RewadsSpent,
+                });
             }
 
 
 
 
-            return ret.ToList();
+            return res.ToList();
         }
     }
 }
