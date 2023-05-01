@@ -38,8 +38,8 @@ public class DeactivateContestCommandHandler : IRequestHandler<DeactivateContest
         if (contest==null){
 			throw new NotFoundException (nameof(contest),request.ContestId);
 		}
-        _context.Answers.RemoveRange(contest.Participations.SelectMany(x => x.Answers));
-        _context.Participations.RemoveRange(contest.Participations);
+        //_context.Answers.RemoveRange(contest.Participations.SelectMany(x => x.Answers));
+        //_context.Participations.RemoveRange(contest.Participations);
 
         contest.IsActive=false;
 		await _context.SaveChangesAsync(cancellationToken);
